@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         if (tryToExtractSessionId(responseString)) {
                             Intent intent = new Intent(MainActivity.this, MailActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(MainActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
                         }

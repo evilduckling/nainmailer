@@ -1,5 +1,6 @@
-package com.evilduckling.nainmailer;
+package com.evilduckling.nainmailer.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.evilduckling.nainmailer.R;
 import com.evilduckling.nainmailer.interfaces.Const;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
@@ -59,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(Const.LOG_TAG, responseString);
 
                         if (tryToExtractSessionId(responseString)) {
-                            Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, MailActivity.class);
+                            startActivity(intent);
                         } else {
                             Toast.makeText(MainActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
                         }

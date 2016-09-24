@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ public class MailActivity extends AppCompatActivity {
 
     private TextView allMail;
     private TextView unreadMail;
+    private Button refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,20 @@ public class MailActivity extends AppCompatActivity {
 
         allMail = (TextView) findViewById(R.id.mail_all);
         unreadMail = (TextView) findViewById(R.id.mail_unread);
+        refresh = (Button) findViewById(R.id.mail_refresh_button);
 
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getMailData();
+            }
+        });
+
+        getMailData();
+
+    }
+
+    private void getMailData() {
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(this, "http://nainwak.com/jeu/chat.php?IDS=" + getIdentifier(), new TextHttpResponseHandler() {
             @Override
@@ -52,12 +68,11 @@ public class MailActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private boolean tryToExtractData(String responseString) {
 
-        Pattern extractorPattern = Pattern.compile("^.*<span class=\"event-temps\">(.*)messages, <span class=\"chatpagerlu\">(.*)non lus</span>.*$");
+        Pattern extractorPattern = Pattern.compile("^.*<span class=\"event-temps\">(.*)messages, <span class=\"chatpager.*lu\">(.*)non lus</span>.*$");
 
         String noReturnString = responseString
             .replaceAll("\n", "")

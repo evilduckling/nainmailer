@@ -13,6 +13,9 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,13 +49,21 @@ public class MainActivity extends AppCompatActivity {
                 client.post(MainActivity.this, "http://nainwak.com/index.php", rp, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        Log.e(Const.LOG_TAG, responseString);
                         Toast.makeText(MainActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                        Log.e(Const.LOG_TAG, responseString);
+
+                        Log.d(Const.LOG_TAG, responseString);
+
+                        if (tryToExtractSessionId(responseString)) {
+                            Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
                 });
 
@@ -61,11 +72,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private boolean tryToExtractSessionId(String responseString) {
+
+        Pattern extractorPattern = Pattern.compile("^.*logout\\.php\\?IDS=(.*)&auto.*$");
+
+        String noReturnString = responseString
+            .replaceAll("\n", "")
+            .replaceAll("\r", "");
+
+        Matcher m = extractorPattern.matcher(noReturnString);
+        if (m.matches()) {
+
+            String identifier = m.group(1);
+            Log.d(Const.LOG_TAG, "Got session identifier key : " + identifier);
+            getSharedPreferences(Const.STORAGE, MODE_PRIVATE)
+                .edit()
+                .putString("identifier", identifier)
+                .apply();
+
+            return true;
+        }
+
+        return false;
+
+    }
+
     /**
      * Load default credentials in fields
      */
     private void loadLastCredentials() {
-        
+
         String loginString = getSharedPreferences(Const.STORAGE, MODE_PRIVATE).getString("login", "");
         String passwordString = getSharedPreferences(Const.STORAGE, MODE_PRIVATE).getString("password", "");
 

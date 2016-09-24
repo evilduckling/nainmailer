@@ -51,14 +51,14 @@ public class MainActivity extends AppCompatActivity {
                 client.post(MainActivity.this, "http://nainwak.com/index.php", rp, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        Log.e(Const.LOG_TAG, responseString);
+                        Log.e(Const.LOG_TAG, "" + responseString);
                         Toast.makeText(MainActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, String responseString) {
 
-                        Log.d(Const.LOG_TAG, responseString);
+                        Log.d(Const.LOG_TAG, "" + responseString);
 
                         if (tryToExtractSessionId(responseString)) {
                             Intent intent = new Intent(MainActivity.this, MailActivity.class);

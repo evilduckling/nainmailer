@@ -50,7 +50,7 @@ public class MailActivity extends AppCompatActivity {
         client.get(this, "http://nainwak.com/jeu/chat.php?IDS=" + getIdentifier(), new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.e(Const.LOG_TAG, responseString);
+                Log.e(Const.LOG_TAG, "" + responseString);
                 Toast.makeText(MailActivity.this, "Sorry something went wrong", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(MailActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -59,7 +59,7 @@ public class MailActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                Log.d(Const.LOG_TAG, responseString);
+                Log.d(Const.LOG_TAG, "" + responseString);
                 if (!tryToExtractData(responseString)) {
                     Toast.makeText(MailActivity.this, "Session must have expired", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(MailActivity.this, MainActivity.class);

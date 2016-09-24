@@ -30,14 +30,18 @@ public class MainActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         button = (Button) findViewById(R.id.button);
 
+        loadLastCredentials();
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 AsyncHttpClient client = new AsyncHttpClient();
                 RequestParams rp = new RequestParams();
-                rp.put("login", login.getText().toString());
+                rp.put("login", login.getText().toString().trim());
                 rp.put("password", password.getText().toString());
+
+                saveNewCredentials();
 
                 client.post(MainActivity.this, "http://nainwak.com/index.php", rp, new TextHttpResponseHandler() {
                     @Override
@@ -54,6 +58,35 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    /**
+     * Load default credentials in fields
+     */
+    private void loadLastCredentials() {
+        
+        String loginString = getSharedPreferences(Const.STORAGE, MODE_PRIVATE).getString("login", "");
+        String passwordString = getSharedPreferences(Const.STORAGE, MODE_PRIVATE).getString("password", "");
+
+        login.setText(loginString);
+        password.setText(passwordString);
+
+    }
+
+    /**
+     * Save registered credentials
+     */
+    private void saveNewCredentials() {
+
+        String loginString = login.getText().toString().trim();
+        String passwordString = password.getText().toString();
+
+        getSharedPreferences(Const.STORAGE, MODE_PRIVATE)
+            .edit()
+            .putString("login", loginString)
+            .putString("password", passwordString)
+            .apply();
 
     }
 }

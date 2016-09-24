@@ -4,4 +4,6 @@ public interface Const {
 
     String LOG_TAG = "Nainmailer";
 
+    String STORAGE = "Storage";
+
 }

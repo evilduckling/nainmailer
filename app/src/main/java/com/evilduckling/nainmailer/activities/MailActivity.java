@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.evilduckling.nainmailer.R;
+import com.evilduckling.nainmailer.adapters.MailAdapter;
 import com.evilduckling.nainmailer.interfaces.Const;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
@@ -34,19 +34,19 @@ public class MailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mail);
 
-        allMail = (TextView) findViewById(R.id.mail_all);
+/*        allMail = (TextView) findViewById(R.id.mail_all);
         unreadMail = (TextView) findViewById(R.id.mail_unread);
-        refresh = (Button) findViewById(R.id.mail_refresh_button);
+        refresh = (Button) findViewById(R.id.mail_refresh_button);*/
         list = (ListView) findViewById(R.id.mail_list);
 
-        refresh.setOnClickListener(new View.OnClickListener() {
+  /*      refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getMailData();
             }
-        });
+        });*/
 
-        getMailData();
+        // getMailData();
         getFullInbox();
 
     }
@@ -127,29 +127,32 @@ public class MailActivity extends AppCompatActivity {
 
         List<Mail> mailList = new ArrayList<>();
 
-        Pattern extractorPattern = Pattern.compile("^.*<td><a class=\"(.*)\" href=\"viewchat.php\\?IDS=.*&amp;id=(\\d*)&amp;page=in\"><b>de : (.*)</b> : <i>(.*)</i></a></td>.*$");
+        Pattern extractorPattern = Pattern.compile("^.*<td><a class=\"(.*)\" href=\"viewchat.php\\?IDS=.*&amp;id=(\\d*)&amp;page=in\"><b>.* : (.*)</b> : <i>(.*)</i></a></td>.*$");
 
-        String noReturnString = responseString
-            .replaceAll("\n", "")
-            .replaceAll("\r", "");
+        String noReturnString = responseString.replaceAll("\r", "").replaceAll("\n", "@##@@##@");
 
-        Matcher m = extractorPattern.matcher(noReturnString);
-        while (m.matches()) {
+        String[] exploded = explode(noReturnString, "@##@@##@");
 
-            Mail mail = new Mail();
+        for(String chunk: exploded) {
 
-            mail.read = !m.group(1).trim().equals("messagenonlu");
-            mail.id = Integer.parseInt(m.group(2).trim());
-            mail.author = m.group(3).trim();
-            mail.title = m.group(4).trim();
+            Log.d(Const.LOG_TAG, "Tested chunk = " + chunk);
+            Matcher m = extractorPattern.matcher(chunk);
+            if (m.matches()) {
 
-            mailList.add(mail);
+                Mail mail = new Mail();
 
+                mail.read = !m.group(1).trim().equals("messagenonlu");
+                mail.id = Integer.parseInt(m.group(2).trim());
+                mail.author = m.group(3).trim();
+                mail.title = m.group(4).trim();
+
+                mailList.add(mail);
+
+            }
         }
 
-        // TODO
-        // new adapter
-        // Add adapter to list
+        MailAdapter mailAdapter = new MailAdapter(this, mailList);
+        list.setAdapter(mailAdapter);
 
     }
 
@@ -162,6 +165,10 @@ public class MailActivity extends AppCompatActivity {
 
         // Todo move outside
 
+    }
+
+    public static String[] explode(String values, String separator) {
+        return values.split(separator, -1);
     }
 
 }

@@ -5,17 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.evilduckling.nainmailer.activities.MailActivity;
+import com.evilduckling.nainmailer.model.Mail;
 import com.evilduckling.nainmailer.view.MailHeaderView;
 
 import java.util.List;
 
 public class MailAdapter extends BaseAdapter {
 
-    private List<MailActivity.Mail> mails;
+    private List<Mail> mails;
     private Activity activity;
 
-    public MailAdapter(Activity activity, List<MailActivity.Mail> mails) {
+    public MailAdapter(Activity activity, List<Mail> mails) {
         this.activity = activity;
         this.mails = mails;
     }
@@ -38,7 +38,7 @@ public class MailAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        MailActivity.Mail mail = (MailActivity.Mail) getItem(i);
+        Mail mail = (Mail) getItem(i);
         MailHeaderView mailHeaderView = new MailHeaderView(activity);
         mailHeaderView.setAuthor(mail.author);
         mailHeaderView.setRead(mail.read);

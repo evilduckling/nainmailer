@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.evilduckling.nainmailer.R;
 import com.evilduckling.nainmailer.adapters.MailAdapter;
 import com.evilduckling.nainmailer.interfaces.Const;
+import com.evilduckling.nainmailer.model.Mail;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
@@ -153,17 +154,6 @@ public class MailActivity extends AppCompatActivity {
 
         MailAdapter mailAdapter = new MailAdapter(this, mailList);
         list.setAdapter(mailAdapter);
-
-    }
-
-    public class Mail {
-
-        public int id;
-        public String title;
-        public String author;
-        public boolean read;
-
-        // Todo move outside
 
     }
 

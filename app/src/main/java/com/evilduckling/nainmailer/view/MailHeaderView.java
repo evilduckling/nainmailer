@@ -1,6 +1,7 @@
 package com.evilduckling.nainmailer.view;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
@@ -47,11 +48,15 @@ public class MailHeaderView extends LinearLayout {
             icoUnread.setVisibility(View.GONE);
             title.setTextColor(ContextCompat.getColor(getContext(), R.color.read));
             author.setTextColor(ContextCompat.getColor(getContext(), R.color.read));
+            title.setTypeface(null, Typeface.NORMAL);
+            author.setTypeface(null, Typeface.NORMAL);
         } else {
             icoRead.setVisibility(View.GONE);
             icoUnread.setVisibility(View.VISIBLE);
             title.setTextColor(ContextCompat.getColor(getContext(), R.color.unread));
             author.setTextColor(ContextCompat.getColor(getContext(), R.color.unread));
+            title.setTypeface(null, Typeface.BOLD);
+            author.setTypeface(null, Typeface.BOLD);
         }
     }
 

@@ -48,8 +48,13 @@ public class MailActivity extends AppCompatActivity {
         });*/
 
         // getMailData();
-        getFullInbox();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getFullInbox();
     }
 
     private void getMailData() {
@@ -115,7 +120,7 @@ public class MailActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-            
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 Log.d(Const.LOG_TAG, "" + responseString);
@@ -134,7 +139,7 @@ public class MailActivity extends AppCompatActivity {
 
         String[] exploded = explode(noReturnString, "@##@@##@");
 
-        for(String chunk: exploded) {
+        for (String chunk : exploded) {
 
             Log.d(Const.LOG_TAG, "Tested chunk = " + chunk);
             Matcher m = extractorPattern.matcher(chunk);
@@ -154,6 +159,23 @@ public class MailActivity extends AppCompatActivity {
 
         MailAdapter mailAdapter = new MailAdapter(this, mailList);
         list.setAdapter(mailAdapter);
+
+        // Prepare title
+        int nbUnread = 0;
+        int nbTotal = mailList.size();
+
+        for (Mail mail : mailList) {
+            if (!mail.read) {
+                nbUnread++;
+            }
+        }
+
+        String unread = "";
+        if (nbUnread > 0) {
+            unread = "(" + nbUnread + ") ";
+        }
+
+        setTitle(unread + "Inbox " + nbTotal + " messages");
 
     }
 

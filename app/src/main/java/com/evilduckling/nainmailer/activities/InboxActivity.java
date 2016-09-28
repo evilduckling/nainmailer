@@ -21,16 +21,16 @@ import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MailActivity extends AppCompatActivity {
+public class InboxActivity extends AppCompatActivity {
 
     private ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mail);
+        setContentView(R.layout.activity_inbox);
 
-        list = (ListView) findViewById(R.id.mail_list);
+        list = (ListView) findViewById(R.id.inbox_list);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class MailActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(Const.LOG_TAG, "" + responseString);
-                Toast.makeText(MailActivity.this, "Sorry something went wrong", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(MailActivity.this, MainActivity.class);
+                Toast.makeText(InboxActivity.this, "Sorry something went wrong", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(InboxActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }

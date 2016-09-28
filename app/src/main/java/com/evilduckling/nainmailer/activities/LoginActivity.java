@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private EditText login;
     private EditText password;
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         login = (EditText) findViewById(R.id.login);
         password = (EditText) findViewById(R.id.password);
@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
                 saveNewCredentials();
 
-                client.post(MainActivity.this, "http://nainwak.com/index.php", rp, new TextHttpResponseHandler() {
+                client.post(LoginActivity.this, "http://nainwak.com/index.php", rp, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         Log.e(Const.LOG_TAG, "" + responseString);
-                        Toast.makeText(MainActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(Const.LOG_TAG, "" + responseString);
 
                         if (tryToExtractSessionId(responseString)) {
-                            Intent intent = new Intent(MainActivity.this, MailActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, InboxActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(MainActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Sorry something went wrong", Toast.LENGTH_SHORT).show();
                         }
 
                     }

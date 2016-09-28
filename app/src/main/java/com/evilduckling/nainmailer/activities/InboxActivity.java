@@ -14,6 +14,7 @@ import com.evilduckling.nainmailer.model.Mail;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -66,17 +67,24 @@ public class InboxActivity extends AppCompatActivity {
     private void tryToExtractInbox(String responseString) {
 
         List<Mail> mailList = new ArrayList<>();
+        String decodedString;
+
+        try {
+            decodedString = new String(responseString.getBytes("ISO-8859-1"));
+        } catch (UnsupportedEncodingException e) {
+            decodedString = responseString;
+            Log.e(Const.LOG_TAG, "Cannot convert to utf-8");
+        }
 
         Pattern extractorPattern = Pattern.compile("^.*<td><a class=\"(.*)\" href=\"viewchat.php\\?IDS=.*&amp;id=(\\d*)&amp;page=in\"><b>.* : (.*)</b> : <i>(.*)</i></a></td>.*$");
 
-        String noReturnString = responseString.replaceAll("\r", "").replaceAll("\n", "@99##@@632##@");
+        // Remove \r and split on \n
+        String[] chunks = explode(decodedString.replaceAll("\r", ""), "\n");
 
-        String[] exploded = explode(noReturnString, "@99##@@632##@");
+        for (String line : chunks) {
 
-        for (String chunk : exploded) {
-
-            Log.d(Const.LOG_TAG, "Tested chunk = " + chunk);
-            Matcher m = extractorPattern.matcher(chunk);
+            Log.d(Const.LOG_TAG, "Tested line = " + line);
+            Matcher m = extractorPattern.matcher(line);
             if (m.matches()) {
 
                 Mail mail = new Mail();

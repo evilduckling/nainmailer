@@ -18,7 +18,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.InboxActivity"/>
+        <activity android:name=".activities.InboxActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
 
     </application>
 

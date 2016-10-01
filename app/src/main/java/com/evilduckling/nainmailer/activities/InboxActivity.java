@@ -2,6 +2,7 @@ package com.evilduckling.nainmailer.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ListView;
@@ -25,6 +26,7 @@ import cz.msebera.android.httpclient.Header;
 public class InboxActivity extends AppCompatActivity {
 
     private ListView list;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,14 @@ public class InboxActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inbox);
 
         list = (ListView) findViewById(R.id.inbox_list);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getFullInbox();
+            }
+        });
     }
 
     @Override
@@ -118,6 +128,7 @@ public class InboxActivity extends AppCompatActivity {
         }
 
         setTitle(unread + "Inbox " + nbTotal + " messages");
+        swipeRefreshLayout.setRefreshing(false);
 
     }
 

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.evilduckling.nainmailer.R;
 import com.evilduckling.nainmailer.adapters.MailAdapter;
+import com.evilduckling.nainmailer.interfaces.Callback;
 import com.evilduckling.nainmailer.interfaces.Const;
 import com.evilduckling.nainmailer.model.Mail;
 import com.loopj.android.http.AsyncHttpClient;
@@ -77,15 +78,7 @@ public class InboxActivity extends AppCompatActivity {
     private void tryToExtractInbox(String responseString) {
 
         List<Mail> mailList = new ArrayList<>();
-        String decodedString;
-
-        try {
-            decodedString = new String(responseString.getBytes("ISO-8859-1"));
-        } catch (UnsupportedEncodingException e) {
-            decodedString = responseString;
-            Log.e(Const.LOG_TAG, "Cannot convert to utf-8");
-        }
-
+        String decodedString = decode(responseString);
         Pattern extractorPattern = Pattern.compile("^.*<td><a class=\"(.*)\" href=\"viewchat.php\\?IDS=.*&amp;id=(\\d*)&amp;page=in\"><b>.* : (.*)</b> : <i>(.*)</i></a></td>.*$");
 
         // Remove \r and split on \n
@@ -134,6 +127,45 @@ public class InboxActivity extends AppCompatActivity {
 
     public static String[] explode(String values, String separator) {
         return values.split(separator, -1);
+    }
+
+    public static String decode(String encodedString) {
+        try {
+            return new String(encodedString.getBytes("ISO-8859-1"));
+        } catch (UnsupportedEncodingException e) {
+            Log.e(Const.LOG_TAG, "Cannot convert to utf-8");
+            return encodedString;
+        }
+    }
+
+    public void getMailContent(final Mail mail, final Callback callback) {
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(this, "http://nainwak.com/jeu/viewchat.php?IDS=" + getIdentifier() + "&page=in&id=" + mail.id, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.e(Const.LOG_TAG, "" + responseString);
+                Toast.makeText(InboxActivity.this, "Sorry something went wrong", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(InboxActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d(Const.LOG_TAG, "" + responseString);
+                parseMail(responseString, mail);
+                callback.afterRequest();
+            }
+        });
+
+    }
+
+    private void parseMail(String response, Mail mail) {
+        String[] chunks = explode(response, "<hr>");
+        if (chunks.length > 1) {
+            mail.content = decode(chunks[1]);
+        }
     }
 
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.evilduckling.nainmailer.R;
 import com.evilduckling.nainmailer.activities.InboxActivity;
+import com.evilduckling.nainmailer.interfaces.Callback;
 import com.evilduckling.nainmailer.model.Mail;
 
 public class MailHeaderView extends LinearLayout {
@@ -110,7 +111,7 @@ public class MailHeaderView extends LinearLayout {
             @Override
             public void onClick(View view) {
                 if (mail.content == null) {
-                    inboxActivity.getMailContent(mail, new InboxActivity.Callback() {
+                    inboxActivity.getMailContent(mail, new Callback() {
                         @Override
                         public void afterRequest() {
                             setContent(mail.content);

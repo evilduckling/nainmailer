@@ -6,5 +6,6 @@ public class Mail {
     public String title;
     public String author;
     public boolean read;
+    public String content;
 
 }

@@ -6,4 +6,6 @@ public interface Const {
 
     String STORAGE = "Storage";
 
+    String BASE_URL = "http://nainwak.com/";
+
 }

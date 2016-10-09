@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 saveNewCredentials();
 
-                client.post(LoginActivity.this, "http://nainwak.com/index.php", rp, new TextHttpResponseHandler() {
+                client.post(LoginActivity.this, Const.BASE_URL + "index.php", rp, new TextHttpResponseHandler() {
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         Log.e(Const.LOG_TAG, "" + responseString);

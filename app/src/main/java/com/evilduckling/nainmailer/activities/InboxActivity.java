@@ -58,7 +58,7 @@ public class InboxActivity extends AppCompatActivity {
 
     private void getFullInbox() {
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(this, "http://nainwak.com/jeu/chatbox.php?IDS=" + getIdentifier() + "&page=in", new TextHttpResponseHandler() {
+        client.get(this, Const.BASE_URL + "jeu/chatbox.php?IDS=" + getIdentifier() + "&page=in", new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(Const.LOG_TAG, "" + responseString);
@@ -142,7 +142,7 @@ public class InboxActivity extends AppCompatActivity {
     public void getMailContent(final Mail mail, final Callback callback) {
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(this, "http://nainwak.com/jeu/viewchat.php?IDS=" + getIdentifier() + "&page=in&id=" + mail.id, new TextHttpResponseHandler() {
+        client.get(this, Const.BASE_URL + "jeu/viewchat.php?IDS=" + getIdentifier() + "&page=in&id=" + mail.id, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(Const.LOG_TAG, "" + responseString);
@@ -174,7 +174,7 @@ public class InboxActivity extends AppCompatActivity {
         mailAdapter.removeMail(mailId);
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(this, "http://nainwak.com/jeu/chataction.php?action=supp&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId, new TextHttpResponseHandler() {
+        client.get(this, Const.BASE_URL + "jeu/chataction.php?action=supp&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(Const.LOG_TAG, "" + responseString);

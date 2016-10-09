@@ -27,6 +27,7 @@ import cz.msebera.android.httpclient.Header;
 public class InboxActivity extends AppCompatActivity {
 
     private ListView list;
+    private MailAdapter mailAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -102,7 +103,7 @@ public class InboxActivity extends AppCompatActivity {
             }
         }
 
-        MailAdapter mailAdapter = new MailAdapter(this, mailList);
+        mailAdapter = new MailAdapter(this, mailList);
         list.setAdapter(mailAdapter);
 
         // Prepare title
@@ -168,4 +169,26 @@ public class InboxActivity extends AppCompatActivity {
         }
     }
 
+    public void deleteMail(int mailId) {
+
+        mailAdapter.removeMail(mailId);
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(this, "http://nainwak.com/jeu/chataction.php?action=supp&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId, new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                Log.e(Const.LOG_TAG, "" + responseString);
+                Toast.makeText(InboxActivity.this, "Sorry something went wrong", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(InboxActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                Log.d(Const.LOG_TAG, "" + responseString);
+            }
+        });
+
+    }
 }

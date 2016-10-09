@@ -16,14 +16,27 @@ import com.evilduckling.nainmailer.model.Mail;
 
 public class MailHeaderView extends LinearLayout {
 
+    /**
+     * Calling activity.
+     */
     private InboxActivity inboxActivity;
 
+    /**
+     * Layout components.
+     */
     private View icoUnread;
     private View icoRead;
     private TextView author;
     private TextView title;
+
+    private View actionBar;
+    private View trash;
+
     private WebView content;
 
+    /**
+     * Internal data.
+     */
     private Mail mail;
 
     public MailHeaderView(Context context) {
@@ -48,6 +61,10 @@ public class MailHeaderView extends LinearLayout {
         icoUnread = findViewById(R.id.ico_unread);
         author = (TextView) findViewById(R.id.author);
         title = (TextView) findViewById(R.id.title);
+
+        actionBar = findViewById(R.id.action_bar);
+        trash = findViewById(R.id.ico_trash);
+
         content = (WebView) findViewById(R.id.mail_content);
 
         inboxActivity = (InboxActivity) context;
@@ -81,9 +98,11 @@ public class MailHeaderView extends LinearLayout {
 
     private void setContent(String c) {
         if (c == null) {
+            actionBar.setVisibility(View.GONE);
             content.setVisibility(View.GONE);
         } else {
             setRead(true);
+            actionBar.setVisibility(View.VISIBLE);
             content.setVisibility(View.VISIBLE);
             // content.loadData(c, "text/html; charset=ISO-8859-1", "ISO-8859-1");
             content.loadData(htmlWrapper(c), "text/html; charset=utf-8", "utf-8");
@@ -120,12 +139,21 @@ public class MailHeaderView extends LinearLayout {
                 } else {
                     if (content.getVisibility() == View.VISIBLE) {
                         content.setVisibility(View.GONE);
+                        actionBar.setVisibility(View.GONE);
                     } else {
                         content.setVisibility(View.VISIBLE);
+                        actionBar.setVisibility(View.VISIBLE);
                     }
                 }
             }
 
+        });
+
+        trash.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inboxActivity.deleteMail(mail.id);
+            }
         });
 
     }

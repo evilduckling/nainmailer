@@ -45,4 +45,14 @@ public class MailAdapter extends BaseAdapter {
         return mailHeaderView;
 
     }
+
+    public void removeMail(int mailId) {
+        for (int i = 0; i < mails.size(); i++) {
+            if (mailId == mails.get(i).id) {
+                mails.remove(i);
+                notifyDataSetChanged();
+                return;
+            }
+        }
+    }
 }

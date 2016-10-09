@@ -5,17 +5,25 @@ import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.evilduckling.nainmailer.R;
+import com.evilduckling.nainmailer.activities.InboxActivity;
+import com.evilduckling.nainmailer.model.Mail;
 
 public class MailHeaderView extends LinearLayout {
+
+    private InboxActivity inboxActivity;
 
     private View icoUnread;
     private View icoRead;
     private TextView author;
     private TextView title;
+    private WebView content;
+
+    private Mail mail;
 
     public MailHeaderView(Context context) {
         super(context);
@@ -39,10 +47,12 @@ public class MailHeaderView extends LinearLayout {
         icoUnread = findViewById(R.id.ico_unread);
         author = (TextView) findViewById(R.id.author);
         title = (TextView) findViewById(R.id.title);
+        content = (WebView) findViewById(R.id.mail_content);
 
+        inboxActivity = (InboxActivity) context;
     }
 
-    public void setRead(boolean read) {
+    private void setRead(boolean read) {
         if (read) {
             icoRead.setVisibility(View.VISIBLE);
             icoUnread.setVisibility(View.GONE);
@@ -60,12 +70,63 @@ public class MailHeaderView extends LinearLayout {
         }
     }
 
-    public void setTitle(String t) {
+    private void setTitle(String t) {
         title.setText(t);
     }
 
-    public void setAuthor(String a) {
+    private void setAuthor(String a) {
         author.setText(a);
+    }
+
+    private void setContent(String c) {
+        if (c == null) {
+            content.setVisibility(View.GONE);
+        } else {
+            setRead(true);
+            content.setVisibility(View.VISIBLE);
+            // content.loadData(c, "text/html; charset=ISO-8859-1", "ISO-8859-1");
+            content.loadData(htmlWrapper(c), "text/html; charset=utf-8", "utf-8");
+        }
+
+    }
+
+    private static String htmlWrapper(String s) {
+        return "<html>" +
+            "<body bgcolor=\"#F5F5F5\">" +
+            "<style>body { margin:0; } .paslignereply {color:#000000;} .lignereply {color:#808080;}</style>" +
+            s +
+            "</body></html>";
+    }
+
+    public void setMail(Mail m) {
+
+        mail = m;
+
+        setTitle(mail.title);
+        setAuthor(mail.author);
+        setRead(mail.read);
+
+        setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mail.content == null) {
+                    inboxActivity.getMailContent(mail, new InboxActivity.Callback() {
+                        @Override
+                        public void afterRequest() {
+                            setContent(mail.content);
+                        }
+                    });
+                } else {
+                    if (content.getVisibility() == View.VISIBLE) {
+                        content.setVisibility(View.GONE);
+                    } else {
+                        content.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+        });
+
     }
 
 }

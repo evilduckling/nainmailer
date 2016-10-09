@@ -40,9 +40,7 @@ public class MailAdapter extends BaseAdapter {
 
         Mail mail = (Mail) getItem(i);
         MailHeaderView mailHeaderView = new MailHeaderView(activity);
-        mailHeaderView.setAuthor(mail.author);
-        mailHeaderView.setRead(mail.read);
-        mailHeaderView.setTitle(mail.title);
+        mailHeaderView.setMail(mail);
 
         return mailHeaderView;
 

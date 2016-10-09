@@ -16,13 +16,15 @@ import com.evilduckling.nainmailer.model.Mail;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.TextHttpResponseHandler;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
+
+import static com.evilduckling.nainmailer.helper.Misc.isoToUtf8;
+import static com.evilduckling.nainmailer.helper.Misc.explode;
 
 public class InboxActivity extends AppCompatActivity {
 
@@ -79,7 +81,7 @@ public class InboxActivity extends AppCompatActivity {
     private void tryToExtractInbox(String responseString) {
 
         List<Mail> mailList = new ArrayList<>();
-        String decodedString = decode(responseString);
+        String decodedString = isoToUtf8(responseString);
         Pattern extractorPattern = Pattern.compile("^.*<td><a class=\"(.*)\" href=\"viewchat.php\\?IDS=.*&amp;id=(\\d*)&amp;page=in\"><b>.* : (.*)</b> : <i>(.*)</i></a></td>.*$");
 
         // Remove \r and split on \n
@@ -126,19 +128,6 @@ public class InboxActivity extends AppCompatActivity {
 
     }
 
-    public static String[] explode(String values, String separator) {
-        return values.split(separator, -1);
-    }
-
-    public static String decode(String encodedString) {
-        try {
-            return new String(encodedString.getBytes("ISO-8859-1"));
-        } catch (UnsupportedEncodingException e) {
-            Log.e(Const.LOG_TAG, "Cannot convert to utf-8");
-            return encodedString;
-        }
-    }
-
     public void getMailContent(final Mail mail, final Callback callback) {
 
         AsyncHttpClient client = new AsyncHttpClient();
@@ -165,7 +154,7 @@ public class InboxActivity extends AppCompatActivity {
     private void parseMail(String response, Mail mail) {
         String[] chunks = explode(response, "<hr>");
         if (chunks.length > 1) {
-            mail.content = decode(chunks[1]);
+            mail.content = isoToUtf8(chunks[1]);
         }
     }
 

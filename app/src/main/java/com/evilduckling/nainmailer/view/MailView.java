@@ -14,7 +14,7 @@ import com.evilduckling.nainmailer.activities.InboxActivity;
 import com.evilduckling.nainmailer.interfaces.Callback;
 import com.evilduckling.nainmailer.model.Mail;
 
-public class MailHeaderView extends LinearLayout {
+public class MailView extends LinearLayout {
 
     /**
      * Calling activity.
@@ -24,14 +24,18 @@ public class MailHeaderView extends LinearLayout {
     /**
      * Layout components.
      */
+    // Header
     private View icoUnread;
     private View icoRead;
     private TextView author;
     private TextView title;
 
+    // Action bar
     private View actionBar;
-    private View trash;
+    private View buttonTrash;
+    private View buttonArchive;
 
+    // mail content
     private WebView content;
 
     /**
@@ -39,23 +43,23 @@ public class MailHeaderView extends LinearLayout {
      */
     private Mail mail;
 
-    public MailHeaderView(Context context) {
+    public MailView(Context context) {
         super(context);
         initializeViews(context, null);
     }
 
-    public MailHeaderView(Context context, AttributeSet attrs) {
+    public MailView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initializeViews(context, attrs);
     }
 
-    public MailHeaderView(Context context, AttributeSet attrs, int defStyle) {
+    public MailView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initializeViews(context, attrs);
     }
 
     private void initializeViews(Context context, AttributeSet attrs) {
-        inflate(context, R.layout.view_mail_header, this);
+        inflate(context, R.layout.view_mail, this);
 
         icoRead = findViewById(R.id.ico_read);
         icoUnread = findViewById(R.id.ico_unread);
@@ -63,7 +67,8 @@ public class MailHeaderView extends LinearLayout {
         title = (TextView) findViewById(R.id.title);
 
         actionBar = findViewById(R.id.action_bar);
-        trash = findViewById(R.id.ico_trash);
+        buttonTrash = findViewById(R.id.button_trash);
+        buttonArchive = findViewById(R.id.button_archive);
 
         content = (WebView) findViewById(R.id.mail_content);
 
@@ -112,10 +117,15 @@ public class MailHeaderView extends LinearLayout {
 
     private static String htmlWrapper(String s) {
         return "<html>" +
-            "<body bgcolor=\"#F5F5F5\">" +
-            "<style>body { margin:0; } .paslignereply {color:#000000;} .lignereply {color:#808080;}</style>" +
+            "<body>" +
+            "<style>" +
+            "   body { margin:0; background-color:#F5F5F5;} " +
+            "   .paslignereply {color:#000000;} " +
+            "   .lignereply {color:#808080;}" +
+            "</style>" +
             s +
-            "</body></html>";
+            "</body>" +
+            "</html>";
     }
 
     public void setMail(Mail m) {
@@ -149,10 +159,17 @@ public class MailHeaderView extends LinearLayout {
 
         });
 
-        trash.setOnClickListener(new OnClickListener() {
+        buttonTrash.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                inboxActivity.deleteMail(mail.id);
+                inboxActivity.actionMail(mail.id, "delete");
+            }
+        });
+
+        buttonArchive.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inboxActivity.actionMail(mail.id, "archive");
             }
         });
 

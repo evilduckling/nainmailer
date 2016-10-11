@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.evilduckling.nainmailer.model.Mail;
-import com.evilduckling.nainmailer.view.MailHeaderView;
+import com.evilduckling.nainmailer.view.MailView;
 
 import java.util.List;
 
@@ -39,10 +39,10 @@ public class MailAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewGroup) {
 
         Mail mail = (Mail) getItem(i);
-        MailHeaderView mailHeaderView = new MailHeaderView(activity);
-        mailHeaderView.setMail(mail);
+        MailView mailView = new MailView(activity);
+        mailView.setMail(mail);
 
-        return mailHeaderView;
+        return mailView;
 
     }
 

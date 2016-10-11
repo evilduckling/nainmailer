@@ -158,12 +158,24 @@ public class InboxActivity extends AppCompatActivity {
         }
     }
 
-    public void deleteMail(int mailId) {
+    public void actionMail(int mailId, String action) {
+
+        String url;
+        switch (action) {
+            case "archive":
+                url = Const.BASE_URL + "jeu/chataction.php?action=arch&sens=IN&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId;
+                break;
+            case "delete":
+                url = Const.BASE_URL + "jeu/chataction.php?action=supp&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId;
+                break;
+            default:
+                return;
+        }
 
         mailAdapter.removeMail(mailId);
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(this, Const.BASE_URL + "jeu/chataction.php?action=supp&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId, new TextHttpResponseHandler() {
+        client.get(this, url, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(Const.LOG_TAG, "" + responseString);

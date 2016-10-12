@@ -55,4 +55,9 @@ public class MailAdapter extends BaseAdapter {
             }
         }
     }
+
+    public List<Mail> getMails() {
+        return mails;
+    }
+
 }

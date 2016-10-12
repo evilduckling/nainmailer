@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.evilduckling.nainmailer.R;
 import com.evilduckling.nainmailer.adapters.MailAdapter;
+import com.evilduckling.nainmailer.helper.Misc;
 import com.evilduckling.nainmailer.interfaces.Callback;
 import com.evilduckling.nainmailer.interfaces.Const;
 import com.evilduckling.nainmailer.model.Mail;
@@ -22,9 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cz.msebera.android.httpclient.Header;
-
-import static com.evilduckling.nainmailer.helper.Misc.isoToUtf8;
-import static com.evilduckling.nainmailer.helper.Misc.explode;
 
 public class InboxActivity extends AppCompatActivity {
 
@@ -81,11 +79,11 @@ public class InboxActivity extends AppCompatActivity {
     private void tryToExtractInbox(String responseString) {
 
         List<Mail> mailList = new ArrayList<>();
-        String decodedString = isoToUtf8(responseString);
+        String decodedString = Misc.isoToUtf8(responseString);
         Pattern extractorPattern = Pattern.compile("^.*<td><a class=\"(.*)\" href=\"viewchat.php\\?IDS=.*&amp;id=(\\d*)&amp;page=in\"><b>.* : (.*)</b> : <i>(.*)</i></a></td>.*$");
 
         // Remove \r and split on \n
-        String[] chunks = explode(decodedString.replaceAll("\r", ""), "\n");
+        String[] chunks = Misc.explode(decodedString.replaceAll("\r", ""), "\n");
 
         for (String line : chunks) {
 
@@ -108,11 +106,18 @@ public class InboxActivity extends AppCompatActivity {
         mailAdapter = new MailAdapter(this, mailList);
         list.setAdapter(mailAdapter);
 
+        generateTitle();
+        swipeRefreshLayout.setRefreshing(false);
+
+    }
+
+    public void generateTitle() {
+
         // Prepare title
         int nbUnread = 0;
-        int nbTotal = mailList.size();
+        int nbTotal = mailAdapter.getCount();
 
-        for (Mail mail : mailList) {
+        for (Mail mail : mailAdapter.getMails()) {
             if (!mail.read) {
                 nbUnread++;
             }
@@ -124,7 +129,6 @@ public class InboxActivity extends AppCompatActivity {
         }
 
         setTitle(unread + "Inbox " + nbTotal + " messages");
-        swipeRefreshLayout.setRefreshing(false);
 
     }
 
@@ -152,9 +156,9 @@ public class InboxActivity extends AppCompatActivity {
     }
 
     private void parseMail(String response, Mail mail) {
-        String[] chunks = explode(response, "<hr>");
+        String[] chunks = Misc.explode(response, "<hr>");
         if (chunks.length > 1) {
-            mail.content = isoToUtf8(chunks[1]);
+            mail.content = Misc.isoToUtf8(chunks[1]);
         }
     }
 
@@ -173,6 +177,7 @@ public class InboxActivity extends AppCompatActivity {
         }
 
         mailAdapter.removeMail(mailId);
+        generateTitle();
 
         AsyncHttpClient client = new AsyncHttpClient();
         client.get(this, url, new TextHttpResponseHandler() {
@@ -192,4 +197,12 @@ public class InboxActivity extends AppCompatActivity {
         });
 
     }
+
+    public void closeAll() {
+        for (Mail mail : mailAdapter.getMails()) {
+            mail.opened = false;
+        }
+        mailAdapter.notifyDataSetChanged();
+    }
+
 }

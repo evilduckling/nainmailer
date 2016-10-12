@@ -91,6 +91,8 @@ public class MailView extends LinearLayout {
             title.setTypeface(null, Typeface.BOLD);
             author.setTypeface(null, Typeface.BOLD);
         }
+
+        inboxActivity.generateTitle();
     }
 
     private void setTitle(String t) {
@@ -101,16 +103,18 @@ public class MailView extends LinearLayout {
         author.setText(a);
     }
 
-    private void setContent(String c) {
-        if (c == null) {
+    private void setContent(Mail mail) {
+        if (mail.content == null) {
+            mail.opened = false;
             actionBar.setVisibility(View.GONE);
             content.setVisibility(View.GONE);
         } else {
+            mail.opened = true;
             setRead(true);
             actionBar.setVisibility(View.VISIBLE);
             content.setVisibility(View.VISIBLE);
             // content.loadData(c, "text/html; charset=ISO-8859-1", "ISO-8859-1");
-            content.loadData(htmlWrapper(c), "text/html; charset=utf-8", "utf-8");
+            content.loadData(htmlWrapper(mail.content), "text/html; charset=utf-8", "utf-8");
         }
 
     }
@@ -136,14 +140,20 @@ public class MailView extends LinearLayout {
         setAuthor(mail.author);
         setRead(mail.read);
 
+        if (mail.opened) {
+            setContent(mail);
+        }
+
         setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (mail.content == null) {
                     inboxActivity.getMailContent(mail, new Callback() {
                         @Override
                         public void afterRequest() {
-                            setContent(mail.content);
+                            inboxActivity.closeAll();
+                            setContent(mail);
                         }
                     });
                 } else {
@@ -151,10 +161,13 @@ public class MailView extends LinearLayout {
                         content.setVisibility(View.GONE);
                         actionBar.setVisibility(View.GONE);
                     } else {
-                        content.setVisibility(View.VISIBLE);
-                        actionBar.setVisibility(View.VISIBLE);
+                        inboxActivity.closeAll();
+                        setContent(mail);
                     }
+
+
                 }
+
             }
 
         });

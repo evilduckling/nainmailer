@@ -8,4 +8,7 @@ public class Mail {
     public boolean read;
     public String content;
 
+    // internal data
+    public boolean opened = false;
+
 }

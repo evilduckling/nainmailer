@@ -15,6 +15,7 @@ import com.evilduckling.nainmailer.interfaces.Callback;
 import com.evilduckling.nainmailer.interfaces.Const;
 import com.evilduckling.nainmailer.model.Mail;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import java.util.ArrayList;
@@ -57,8 +58,11 @@ public class InboxActivity extends AppCompatActivity {
     }
 
     private void getFullInbox() {
+
+        sendStat("inbox");
+
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(this, Const.BASE_URL + "jeu/chatbox.php?IDS=" + getIdentifier() + "&page=in", new TextHttpResponseHandler() {
+        client.get(this, Const.GAME_URL + "jeu/chatbox.php?IDS=" + getIdentifier() + "&page=in", new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(Const.LOG_TAG, "" + responseString);
@@ -135,7 +139,7 @@ public class InboxActivity extends AppCompatActivity {
     public void getMailContent(final Mail mail, final Callback callback) {
 
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(this, Const.BASE_URL + "jeu/viewchat.php?IDS=" + getIdentifier() + "&page=in&id=" + mail.id, new TextHttpResponseHandler() {
+        client.get(this, Const.GAME_URL + "jeu/viewchat.php?IDS=" + getIdentifier() + "&page=in&id=" + mail.id, new TextHttpResponseHandler() {
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(Const.LOG_TAG, "" + responseString);
@@ -167,10 +171,10 @@ public class InboxActivity extends AppCompatActivity {
         String url;
         switch (action) {
             case "archive":
-                url = Const.BASE_URL + "jeu/chataction.php?action=arch&sens=IN&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId;
+                url = Const.GAME_URL + "jeu/chataction.php?action=arch&sens=IN&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId;
                 break;
             case "delete":
-                url = Const.BASE_URL + "jeu/chataction.php?action=supp&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId;
+                url = Const.GAME_URL + "jeu/chataction.php?action=supp&IDS=" + getIdentifier() + "&page=in&mailsel=" + mailId;
                 break;
             default:
                 return;
@@ -203,6 +207,14 @@ public class InboxActivity extends AppCompatActivity {
             mail.opened = false;
         }
         mailAdapter.notifyDataSetChanged();
+    }
+
+    private void sendStat(String action) {
+        AsyncHttpClient statsClient = new AsyncHttpClient();
+        RequestParams rp = new RequestParams();
+        rp.put("action", action);
+        rp.put("user", getSharedPreferences(Const.STORAGE, MODE_PRIVATE).getString("login", ""));
+        statsClient.post(Const.STATS_URL, rp, null);
     }
 
 }

@@ -6,6 +6,8 @@ public interface Const {
 
     String STORAGE = "Storage";
 
-    String BASE_URL = "http://nainwak.com/";
+    String GAME_URL = "http://nainwak.com/";
+
+    String STATS_URL = "http://ttsteam.free.fr/nainwak.php";
 
 }

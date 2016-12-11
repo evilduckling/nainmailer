@@ -7,5 +7,6 @@
     <color name="read">#808080</color>
     <color name="unread">#000000</color>
     <color name="background">#F5F5F5</color>
+    <color name="ico_color">#808080</color>
 
 </resources>

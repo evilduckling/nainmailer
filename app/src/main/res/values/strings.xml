@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Nainmailer</string>
+
+    <string name="ico_read_mail">X</string>
+    <string name="ico_unread_mail">X</string>
+    <string name="ico_archive">X</string>
+    <string name="ico_trash">X</string>
 </resources>

@@ -16,26 +16,26 @@
             android:id="@+id/ico_read"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
             android:text="@string/ico_read_mail"
+            android:textColor="@color/unread"
             android:textSize="@dimen/ico_size"
-            android:textColor="@color/ico_color"
             />
 
         <com.evilduckling.nainmailer.view.MaterialIconView
             android:id="@+id/ico_unread"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
             android:text="@string/ico_read_mail"
+            android:textColor="@color/read"
             android:textSize="@dimen/ico_size"
-            android:textColor="@color/ico_color"
             />
 
         <TextView
@@ -72,26 +72,26 @@
             android:id="@+id/button_archive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginRight="15dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="0dp"
             android:text="@string/ico_archive"
-            android:textSize="@dimen/ico_size"
             android:textColor="@color/ico_color"
+            android:textSize="@dimen/ico_size"
             />
 
         <com.evilduckling.nainmailer.view.MaterialIconView
             android:id="@+id/button_trash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
             android:layout_marginLeft="0dp"
-            android:text="@string/ico_trash"
-            android:textSize="@dimen/ico_size"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="0dp"
+            android:text="@string/ico_delete_forever"
             android:textColor="@color/ico_color"
+            android:textSize="@dimen/ico_size"
             />
 
     </LinearLayout>
@@ -100,11 +100,11 @@
         android:id="@+id/mail_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_marginBottom="0dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="0dp"
         android:background="@color/background"
+        android:visibility="gone"
         />
 
 </LinearLayout>
